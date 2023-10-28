@@ -6,3 +6,7 @@ void Entity::draw(sf::RenderWindow& window)
 
 	window.draw(this->shape);
 }
+
+Entity::~Entity()
+{
+}

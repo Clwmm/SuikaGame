@@ -6,7 +6,9 @@ Game::Game()
     viewSize = { screenSize.x * 4, screenSize.y * 4 };
 
 	window = new sf::RenderWindow(sf::VideoMode(screenSize.x, screenSize.y), "SuikaGame", sf::Style::Titlebar | sf::Style::Close);
-	backgroundColor = sf::Color(18, 33, 43);
+    window->setFramerateLimit(244);
+    
+    backgroundColor = sf::Color(18, 33, 43);
 
 	view = sf::View(sf::Vector2f(0, 0), sf::Vector2f(viewSize.x, viewSize.y));
 	window->setView(view);
@@ -16,7 +18,8 @@ Game::Game()
 
 Game::~Game()
 {
-    window->close();
+    this->clearEntities();
+    this->window->close();
 	delete window;
 }
 
@@ -24,18 +27,8 @@ void Game::game()
 {
     std::random_device rd;
     std::mt19937 mt(rd());
-    std::uniform_int_distribution<int> dist(-1000, 1000);
-
-    Entity* e = nullptr;
-
-    for (int i = 0; i < 1700; i++)
-    {
-        e = new Ball(15, { static_cast<float>(dist(mt)), static_cast<float>(dist(mt))});
-        entities.push_back(e);
-    }
-
-    e = new Ball(75, { 2000, 2000 });
-    entities.push_back(e);
+    std::uniform_int_distribution<int> distPos(-1000, 1000);
+    std::uniform_int_distribution<int> distRad(50, 250);
 
     while (window->isOpen())
     {
@@ -58,64 +51,194 @@ void Game::game()
                     break;
                 }
 
+            case sf::Event::MouseButtonPressed:
+                switch (event.mouseButton.button)
+                {
+                case sf::Mouse::Left:
+                {
+                    sf::Vector2i pixelPos = sf::Mouse::getPosition(*window);
+                    sf::Vector2f wordPos = window->mapPixelToCoords(pixelPos);
+                    entities.push_back(new Strawberry({ wordPos.x, wordPos.y }));
+                    /*for (int i = 0; i < 100; i++)
+                    {
+                        entities.push_back(new Ball(50.0f, { static_cast<float>(distPos(mt)), static_cast<float>(distPos(mt)) }));
+                    }*/
+                    break;
+                }
+                case sf::Mouse::Right:
+                {
+                    sf::Vector2i pixelPos = sf::Mouse::getPosition(*window);
+                    sf::Vector2f wordPos = window->mapPixelToCoords(pixelPos);
+                    entities.push_back(new Apple({ wordPos.x, wordPos.y }));
+                    break;
+                }
+                default:
+                    break;
+                }
+
             default:
                 break;
             }
         }
 
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        this->updatingEntities();
+        this->collisions();
+        this->physics();
+        this->render();
+    }
+}
+
+void Game::updatingEntities()
+{
+    for (auto i = entities.begin(); i != entities.end();)
+    {
+        Entity* e = *i;
+        e->update(deltaTime);
+
+        if (!e->life)
         {
-            sf::Vector2i pixelPos = sf::Mouse::getPosition(*window);
-            sf::Vector2f wordPos = window->mapPixelToCoords(pixelPos);
-            e->position = wordPos;
+            i = entities.erase(i);
+            delete e;
         }
         else
+            ++i;
+    }
+}
+
+void Game::collisions()
+{
+    auto DoCirclesOverlap = [](float x1, float y1, float r1, float x2, float y2, float r2)
+    {
+        return fabs((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) <= (r1 + r2) * (r1 + r2);
+    };
+
+    for (int i = 0; i < entities.size(); ++i)
+    {
+        for (int j = i + 1; j < entities.size(); ++j)
         {
-            e->position = { -9000, -9000 };
-        }
-        
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-            e->position.y -= 100 * deltaTime;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-            e->position.y += 100 * deltaTime;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-            e->position.x -= 100 * deltaTime;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-            e->position.x += 100 * deltaTime;
-
-
-        auto DoCirclesOverlap = [](float x1, float y1, float r1, float x2, float y2, float r2)
+            if (DoCirclesOverlap(entities[i]->position.x, entities[i]->position.y, entities[i]->radius, entities[j]->position.x, entities[j]->position.y, entities[j]->radius))
             {
-                return fabs((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) <= (r1 + r2) * (r1 + r2);
-            };
-
-        for (int i = 0; i < entities.size(); ++i)
-        {
-            for (int j = i + 1; j < entities.size(); ++j)
-            {
-                if (DoCirclesOverlap(entities[i]->position.x, entities[i]->position.y, entities[i]->radius, entities[j]->position.x, entities[j]->position.y, entities[j]->radius))
+                if (typeid(*entities[i]) == typeid(*entities[j]))
                 {
-                    // Distance between ball centers
-                    float distance = sqrtf((entities[i]->position.x - entities[j]->position.x) * (entities[i]->position.x - entities[j]->position.x) + (entities[i]->position.y - entities[j]->position.y) * (entities[i]->position.y - entities[j]->position.y));
-
-                    float overlap = 0.5f * (distance - entities[i]->radius - entities[j]->radius);
-
-                    // Displace Current Ball
-                    entities[i]->position.x -= overlap * (entities[i]->position.x - entities[j]->position.x) / distance;
-                    entities[i]->position.y -= overlap * (entities[i]->position.y - entities[j]->position.y) / distance;
-
-                    // Displace Target Ball
-                    entities[j]->position.x += overlap * (entities[i]->position.x - entities[j]->position.x) / distance;
-                    entities[j]->position.y += overlap * (entities[i]->position.y - entities[j]->position.y) / distance;
+                    createNext(entities[i], entities[j]);
+                    ++i;
+                    continue;
                 }
+                vecCollidingPairs.push_back({
+                    entities[i],
+                    entities[j]
+                    });
+
+                // Distance between ball centers
+                float distance = sqrtf((entities[i]->position.x - entities[j]->position.x) * (entities[i]->position.x - entities[j]->position.x) + (entities[i]->position.y - entities[j]->position.y) * (entities[i]->position.y - entities[j]->position.y));
+
+                float overlap = 0.5f * (distance - entities[i]->radius - entities[j]->radius);
+
+                // Displace Current Ball
+                entities[i]->position.x -= overlap * (entities[i]->position.x - entities[j]->position.x) / distance;
+                entities[i]->position.y -= overlap * (entities[i]->position.y - entities[j]->position.y) / distance;
+
+                // Displace Target Ball
+                entities[j]->position.x += overlap * (entities[i]->position.x - entities[j]->position.x) / distance;
+                entities[j]->position.y += overlap * (entities[i]->position.y - entities[j]->position.y) / distance;
             }
         }
-
-
-        window->clear(sf::Color(18, 33, 43)); // Color background
-        for (auto x : entities)
-            x->draw(*window);
-        window->display();
     }
+}
+
+void Game::physics()
+{
+    for (auto c : vecCollidingPairs)
+    {
+        Entity* b1 = c.first;
+        Entity* b2 = c.second;
+
+        // Distance between balls
+        float fDistance = sqrtf((b1->position.x - b2->position.x) * (b1->position.x - b2->position.x) + (b1->position.y - b2->position.y) * (b1->position.y - b2->position.y));
+
+        // Normal
+        float nx = (b2->position.x - b1->position.x) / fDistance;
+        float ny = (b2->position.y - b1->position.y) / fDistance;
+
+        // Tangent
+        float tx = -ny;
+        float ty = nx;
+
+        // Dot Product Tangent
+        float dpTan1 = b1->velocity.x * tx + b1->velocity.y * ty;
+        float dpTan2 = b2->velocity.x * tx + b2->velocity.y * ty;
+
+        // Dot Product Normal
+        float dpNorm1 = b1->velocity.x * nx + b1->velocity.y * ny;
+        float dpNorm2 = b2->velocity.x * nx + b2->velocity.y * ny;
+
+        // Conservation of momentum in 1D
+        float m1 = (dpNorm1 * (b1->mass - b2->mass) + 2.0f * b2->mass * dpNorm2) / (b1->mass + b2->mass);
+        float m2 = (dpNorm2 * (b2->mass - b1->mass) + 2.0f * b1->mass * dpNorm1) / (b1->mass + b2->mass);
+
+        // Update ball velocities
+        b1->velocity.x = (tx * dpTan1 + nx * m1);
+        b1->velocity.y = (ty * dpTan1 + ny * m1);
+        b2->velocity.x = (tx * dpTan2 + nx * m2);
+        b2->velocity.y = (ty * dpTan2 + ny * m2);
+
+    }
+    vecCollidingPairs.clear();
+}
+
+void Game::render()
+{
+    sf::Vertex bottomLine[] =
+    {
+        sf::Vertex({ -1100, 1800}),
+        sf::Vertex({ 1100, 1800})
+    };
+
+    sf::Vertex leftLine[] =
+    {
+        sf::Vertex({ -1100, -2000}),
+        sf::Vertex({ -1100, 1800})
+    };
+
+    sf::Vertex rightLine[] =
+    {
+        sf::Vertex({ 1100, -2000}),
+        sf::Vertex({ 1100, 1800})
+    };
+
+
+    window->clear(sf::Color(18, 33, 43)); // Color background
+    for (auto x : entities)
+        x->draw(*window);
+    window->draw(bottomLine, 2, sf::Lines);
+    window->draw(rightLine, 2, sf::Lines);
+    window->draw(leftLine, 2, sf::Lines);
+    window->display();
+}
+
+void Game::createNext(Entity*& first, Entity*& second)
+{
+    Entity* ptr = nullptr;
+    first->life = false;
+    second->life = false;
+    sf::Vector2f position = 
+    {
+        (first->position.x + second->position.x) / 2,
+        (first->position.y + second->position.y) / 2
+    };
+
+    if (dynamic_cast<Strawberry*>(first))
+        ptr = new Apple(position);
+    else if (dynamic_cast<Apple*>(first))
+        ptr = new Orange(position);
+
+    if (ptr != nullptr)
+        entities.push_back(ptr);
+}
+
+void Game::clearEntities()
+{
+    for (auto x : entities)
+        delete x;
+    entities.erase(entities.begin(), entities.end());
 }

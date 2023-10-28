@@ -4,7 +4,9 @@
 #include <vector>
 #include <random>
 
-#include "Ball.h"
+#include "Strawberry.h"
+#include "Apple.h"
+#include "Orange.h"
 
 
 class Game
@@ -22,11 +24,18 @@ private:
 	sf::Clock clock;
 
 	std::vector<Entity*> entities;
+	std::vector<std::pair<Entity*, Entity*>> vecCollidingPairs;
 
 public:
 	Game();
 	~Game();
 
 	void game();
+	void updatingEntities();
+	void collisions();
+	void physics();
+	void render();
+	void createNext(Entity*& first, Entity*& second);
+	void clearEntities();
 };
 

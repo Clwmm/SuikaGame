@@ -13,6 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Entity">
+      <UniqueIdentifier>{b2ddbf77-3626-469c-a7cc-78c5f65f7510}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Balls">
+      <UniqueIdentifier>{c574013e-0467-4831-a69e-458124190c59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entity">
+      <UniqueIdentifier>{556887c9-6236-4336-b83c-35c4b7c5fa1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Balls">
+      <UniqueIdentifier>{0aab3431-f9fc-4c48-beb1-12be421686fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -22,9 +34,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Entity.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Entity</Filter>
     </ClCompile>
     <ClCompile Include="Ball.cpp">
+      <Filter>Source Files\Balls</Filter>
+    </ClCompile>
+    <ClCompile Include="Strawberry.cpp">
+      <Filter>Source Files\Balls</Filter>
+    </ClCompile>
+    <ClCompile Include="Apple.cpp">
+      <Filter>Source Files\Balls</Filter>
+    </ClCompile>
+    <ClCompile Include="Orange.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -33,9 +54,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Entity.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Entity</Filter>
     </ClInclude>
     <ClInclude Include="Ball.h">
+      <Filter>Header Files\Balls</Filter>
+    </ClInclude>
+    <ClInclude Include="Strawberry.h">
+      <Filter>Header Files\Balls</Filter>
+    </ClInclude>
+    <ClInclude Include="Apple.h">
+      <Filter>Header Files\Balls</Filter>
+    </ClInclude>
+    <ClInclude Include="Orange.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
