@@ -1,12 +1,14 @@
 #pragma once
 
-#include <iostream>
 #include <vector>
 #include <random>
 
 #include "Strawberry.h"
 #include "Apple.h"
 #include "Orange.h"
+#include "Melon.h"
+#include "Watermelon.h"
+#include "Final.h"
 
 
 class Game
@@ -25,6 +27,8 @@ private:
 
 	std::vector<Entity*> entities;
 	std::vector<std::pair<Entity*, Entity*>> vecCollidingPairs;
+
+	sf::Sprite glass;
 
 public:
 	Game();

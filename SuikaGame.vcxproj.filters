@@ -45,8 +45,17 @@
     <ClCompile Include="Apple.cpp">
       <Filter>Source Files\Balls</Filter>
     </ClCompile>
+    <ClCompile Include="Melon.cpp">
+      <Filter>Source Files\Balls</Filter>
+    </ClCompile>
     <ClCompile Include="Orange.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Balls</Filter>
+    </ClCompile>
+    <ClCompile Include="Watermelon.cpp">
+      <Filter>Source Files\Balls</Filter>
+    </ClCompile>
+    <ClCompile Include="Final.cpp">
+      <Filter>Source Files\Balls</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -65,8 +74,20 @@
     <ClInclude Include="Apple.h">
       <Filter>Header Files\Balls</Filter>
     </ClInclude>
-    <ClInclude Include="Orange.h">
+    <ClInclude Include="Settings.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Melon.h">
+      <Filter>Header Files\Balls</Filter>
+    </ClInclude>
+    <ClInclude Include="Orange.h">
+      <Filter>Header Files\Balls</Filter>
+    </ClInclude>
+    <ClInclude Include="Watermelon.h">
+      <Filter>Header Files\Balls</Filter>
+    </ClInclude>
+    <ClInclude Include="Final.h">
+      <Filter>Header Files\Balls</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

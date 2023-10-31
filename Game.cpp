@@ -2,8 +2,8 @@
 
 Game::Game()
 {
-    screenSize = sf::Vector2f(1000, 1000);
-    viewSize = { screenSize.x * 4, screenSize.y * 4 };
+    screenSize = sf::Vector2f(SCREEN_SIZE, SCREEN_SIZE);
+    viewSize = { VIEW_SIZE, VIEW_SIZE };
 
 	window = new sf::RenderWindow(sf::VideoMode(screenSize.x, screenSize.y), "SuikaGame", sf::Style::Titlebar | sf::Style::Close);
     window->setFramerateLimit(244);
@@ -12,6 +12,16 @@ Game::Game()
 
 	view = sf::View(sf::Vector2f(0, 0), sf::Vector2f(viewSize.x, viewSize.y));
 	window->setView(view);
+
+    sf::Texture glassTexture;
+    if (!glassTexture.loadFromFile("res/Glass.png"))
+    {
+        std::cerr << "Cannot load: " << "res/Glass.png" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    this->glass.setTexture(glassTexture);
+
+    this->glass.setPosition(-X_BOUNDRY, -Y_BOUNDRY);
 
 	this->game();
 }
@@ -27,8 +37,8 @@ void Game::game()
 {
     std::random_device rd;
     std::mt19937 mt(rd());
-    std::uniform_int_distribution<int> distPos(-1000, 1000);
-    std::uniform_int_distribution<int> distRad(50, 250);
+    std::uniform_int_distribution<int> distPos(-40, 40);
+    std::uniform_int_distribution<int> distEntity(0, 5);
 
     while (window->isOpen())
     {
@@ -59,10 +69,6 @@ void Game::game()
                     sf::Vector2i pixelPos = sf::Mouse::getPosition(*window);
                     sf::Vector2f wordPos = window->mapPixelToCoords(pixelPos);
                     entities.push_back(new Strawberry({ wordPos.x, wordPos.y }));
-                    /*for (int i = 0; i < 100; i++)
-                    {
-                        entities.push_back(new Ball(50.0f, { static_cast<float>(distPos(mt)), static_cast<float>(distPos(mt)) }));
-                    }*/
                     break;
                 }
                 case sf::Mouse::Right:
@@ -72,6 +78,36 @@ void Game::game()
                     entities.push_back(new Apple({ wordPos.x, wordPos.y }));
                     break;
                 }
+                case sf::Mouse::Middle:
+                {
+                    for (int i = 0; i < 2; i++)
+                    {
+                        switch (distEntity(mt))
+                        {
+                        case 0:
+                            entities.push_back(new Strawberry({ static_cast<float>(distPos(mt)), static_cast<float>(distPos(mt)) }));
+                            break;
+                        case 1:
+                            entities.push_back(new Apple({ static_cast<float>(distPos(mt)), static_cast<float>(distPos(mt)) }));
+                            break;
+                        case 2:
+                            entities.push_back(new Orange({ static_cast<float>(distPos(mt)), static_cast<float>(distPos(mt)) }));
+                            break;
+                        case 3:
+                            entities.push_back(new Melon({ static_cast<float>(distPos(mt)), static_cast<float>(distPos(mt)) }));
+                            break;
+                        case 4:
+                            entities.push_back(new Watermelon({ static_cast<float>(distPos(mt)), static_cast<float>(distPos(mt)) }));
+                            break;
+                        case 5:
+                            entities.push_back(new Final({ static_cast<float>(distPos(mt)), static_cast<float>(distPos(mt)) }));
+                            break;
+                        default:
+                            break;
+                        }
+                        
+                    }
+                }
                 default:
                     break;
                 }
@@ -80,6 +116,7 @@ void Game::game()
                 break;
             }
         }
+        
 
         this->updatingEntities();
         this->collisions();
@@ -118,7 +155,7 @@ void Game::collisions()
         {
             if (DoCirclesOverlap(entities[i]->position.x, entities[i]->position.y, entities[i]->radius, entities[j]->position.x, entities[j]->position.y, entities[j]->radius))
             {
-                if (typeid(*entities[i]) == typeid(*entities[j]))
+                if (typeid(*entities[i]) == typeid(*entities[j]) && !dynamic_cast<Final*>(entities[i]))
                 {
                     createNext(entities[i], entities[j]);
                     ++i;
@@ -190,29 +227,30 @@ void Game::render()
 {
     sf::Vertex bottomLine[] =
     {
-        sf::Vertex({ -1100, 1800}),
-        sf::Vertex({ 1100, 1800})
+        sf::Vertex({ -X_BOUNDRY, Y_BOUNDRY}),
+        sf::Vertex({ X_BOUNDRY, Y_BOUNDRY})
     };
 
     sf::Vertex leftLine[] =
     {
-        sf::Vertex({ -1100, -2000}),
-        sf::Vertex({ -1100, 1800})
+        sf::Vertex({ -X_BOUNDRY, -Y_BOUNDRY}),
+        sf::Vertex({ -X_BOUNDRY, Y_BOUNDRY})
     };
 
     sf::Vertex rightLine[] =
     {
-        sf::Vertex({ 1100, -2000}),
-        sf::Vertex({ 1100, 1800})
+        sf::Vertex({ X_BOUNDRY, -Y_BOUNDRY}),
+        sf::Vertex({ X_BOUNDRY, Y_BOUNDRY})
     };
 
 
     window->clear(sf::Color(18, 33, 43)); // Color background
     for (auto x : entities)
         x->draw(*window);
-    window->draw(bottomLine, 2, sf::Lines);
+    /*window->draw(bottomLine, 2, sf::Lines);
     window->draw(rightLine, 2, sf::Lines);
-    window->draw(leftLine, 2, sf::Lines);
+    window->draw(leftLine, 2, sf::Lines);*/
+    window->draw(this->glass);
     window->display();
 }
 
@@ -231,6 +269,12 @@ void Game::createNext(Entity*& first, Entity*& second)
         ptr = new Apple(position);
     else if (dynamic_cast<Apple*>(first))
         ptr = new Orange(position);
+    else if (dynamic_cast<Orange*>(first))
+        ptr = new Melon(position);
+    else if (dynamic_cast<Melon*>(first))
+        ptr = new Watermelon(position);
+    else if (dynamic_cast<Watermelon*>(first))
+        ptr = new Final(position);
 
     if (ptr != nullptr)
         entities.push_back(ptr);

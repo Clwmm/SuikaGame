@@ -154,18 +154,25 @@
     <ClCompile Include="Apple.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="Final.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Melon.cpp" />
     <ClCompile Include="Orange.cpp" />
     <ClCompile Include="Strawberry.cpp" />
+    <ClCompile Include="Watermelon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Apple.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="Final.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Melon.h" />
     <ClInclude Include="Orange.h" />
+    <ClInclude Include="Settings.h" />
     <ClInclude Include="Strawberry.h" />
+    <ClInclude Include="Watermelon.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="openal32.dll" />

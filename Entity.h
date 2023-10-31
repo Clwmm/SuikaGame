@@ -1,10 +1,14 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+#include "Settings.h"
+#include <iostream>
 
 class Entity
 {
 public:
 	sf::CircleShape shape;
+	sf::Texture texture;
+	sf::Sprite sprite;
 	sf::Vector2f position;
 	sf::Vector2f velocity;
 	sf::Vector2f acceleration;

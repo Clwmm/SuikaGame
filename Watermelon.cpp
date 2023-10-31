@@ -1,19 +1,18 @@
-#include "Strawberry.h"
+#include "Watermelon.h"
 
-Strawberry::Strawberry(const sf::Vector2f& position)
+Watermelon::Watermelon(const sf::Vector2f& position)
 {
-	this->radius = STRAWBERRY_SIZE;
+	this->radius = WATERMELON_SIZE;
 	this->mass = radius * MASS_MULTIPLIER;
 	this->position = position;
 
 	this->shape.setRadius(radius);
 	this->shape.setOrigin(radius, radius);
-	this->shape.setFillColor(sf::Color::Red);
+	this->shape.setFillColor(sf::Color(200, 255, 150));
 
-
-	if (!texture.loadFromFile("res/Pea.png"))
+	if (!texture.loadFromFile("res/Basketball.png"))
 	{
-		std::cerr << "Cannot load: " << "res/Pea.png" << std::endl;
+		std::cerr << "Cannot load: " << "res/Basketball.png" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 
