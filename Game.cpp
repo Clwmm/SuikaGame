@@ -23,6 +23,9 @@ Game::Game()
 
     this->glass.setPosition(-X_BOUNDRY, -Y_BOUNDRY);
 
+    this->topLine[0] = sf::Vertex(sf::Vector2f(- X_BOUNDRY, TOP_BOUNDRY));
+    this->topLine[1] = sf::Vertex(sf::Vector2f(X_BOUNDRY, TOP_BOUNDRY));
+
 	this->game();
 }
 
@@ -37,8 +40,12 @@ void Game::game()
 {
     std::random_device rd;
     std::mt19937 mt(rd());
-    std::uniform_int_distribution<int> distPos(-40, 40);
-    std::uniform_int_distribution<int> distEntity(0, 5);
+    std::uniform_int_distribution<int> distEntity(0, 3);
+
+    sf::Vector2i pixelPos = sf::Mouse::getPosition(*window);
+    sf::Vector2f wordPos = window->mapPixelToCoords(pixelPos);
+
+    this->initActualAndNext();
 
     while (window->isOpen())
     {
@@ -65,72 +72,48 @@ void Game::game()
                 switch (event.mouseButton.button)
                 {
                 case sf::Mouse::Left:
-                {
-                    sf::Vector2i pixelPos = sf::Mouse::getPosition(*window);
-                    sf::Vector2f wordPos = window->mapPixelToCoords(pixelPos);
-                    entities.push_back(new Strawberry({ wordPos.x, wordPos.y }));
-                    break;
-                }
-                case sf::Mouse::Right:
-                {
-                    sf::Vector2i pixelPos = sf::Mouse::getPosition(*window);
-                    sf::Vector2f wordPos = window->mapPixelToCoords(pixelPos);
-                    entities.push_back(new Apple({ wordPos.x, wordPos.y }));
-                    break;
-                }
-                case sf::Mouse::Middle:
-                {
-                    for (int i = 0; i < 2; i++)
+                    if (gameOver)
+                        break;
+                    if (canClick)
                     {
-                        switch (distEntity(mt))
-                        {
-                        case 0:
-                            entities.push_back(new Strawberry({ static_cast<float>(distPos(mt)), static_cast<float>(distPos(mt)) }));
-                            break;
-                        case 1:
-                            entities.push_back(new Apple({ static_cast<float>(distPos(mt)), static_cast<float>(distPos(mt)) }));
-                            break;
-                        case 2:
-                            entities.push_back(new Orange({ static_cast<float>(distPos(mt)), static_cast<float>(distPos(mt)) }));
-                            break;
-                        case 3:
-                            entities.push_back(new Melon({ static_cast<float>(distPos(mt)), static_cast<float>(distPos(mt)) }));
-                            break;
-                        case 4:
-                            entities.push_back(new Watermelon({ static_cast<float>(distPos(mt)), static_cast<float>(distPos(mt)) }));
-                            break;
-                        case 5:
-                            entities.push_back(new Final({ static_cast<float>(distPos(mt)), static_cast<float>(distPos(mt)) }));
-                            break;
-                        default:
-                            break;
-                        }
-                        
+                        this->pushToGame(mt, distEntity);
+                        canClick = false;
                     }
-                }
+                    break;
                 default:
                     break;
                 }
-
             default:
                 break;
             }
         }
         
+        pixelPos = sf::Mouse::getPosition(*window);
+        wordPos = window->mapPixelToCoords(pixelPos);
+        this->updateActualPosition(wordPos);
 
-        this->updatingEntities();
-        this->collisions();
-        this->physics();
+        if (!gameOver)
+        {
+            this->updateClickDelay();
+            this->updatingEntities();
+            this->updatingEndGame();
+            this->collisions();
+            this->physics();
+        }
         this->render();
     }
 }
 
 void Game::updatingEntities()
 {
+    entityOverEndBound = false;
     for (auto i = entities.begin(); i != entities.end();)
     {
         Entity* e = *i;
         e->update(deltaTime);
+
+        if (isEntityOverEndBound(e))
+            entityOverEndBound = true;
 
         if (!e->life)
         {
@@ -225,37 +208,20 @@ void Game::physics()
 
 void Game::render()
 {
-    sf::Vertex bottomLine[] =
-    {
-        sf::Vertex({ -X_BOUNDRY, Y_BOUNDRY}),
-        sf::Vertex({ X_BOUNDRY, Y_BOUNDRY})
-    };
-
-    sf::Vertex leftLine[] =
-    {
-        sf::Vertex({ -X_BOUNDRY, -Y_BOUNDRY}),
-        sf::Vertex({ -X_BOUNDRY, Y_BOUNDRY})
-    };
-
-    sf::Vertex rightLine[] =
-    {
-        sf::Vertex({ X_BOUNDRY, -Y_BOUNDRY}),
-        sf::Vertex({ X_BOUNDRY, Y_BOUNDRY})
-    };
-
-
     window->clear(sf::Color(18, 33, 43)); // Color background
     for (auto x : entities)
         x->draw(*window);
-    /*window->draw(bottomLine, 2, sf::Lines);
-    window->draw(rightLine, 2, sf::Lines);
-    window->draw(leftLine, 2, sf::Lines);*/
+    actual->draw(*window);
+    next->draw(*window);
+    window->draw(topLine, 2, sf::Lines);
     window->draw(this->glass);
     window->display();
 }
 
 void Game::createNext(Entity*& first, Entity*& second)
 {
+    if (!first->life || !second->life)
+        return;
     Entity* ptr = nullptr;
     first->life = false;
     second->life = false;
@@ -265,19 +231,94 @@ void Game::createNext(Entity*& first, Entity*& second)
         (first->position.y + second->position.y) / 2
     };
 
-    if (dynamic_cast<Strawberry*>(first))
-        ptr = new Apple(position);
-    else if (dynamic_cast<Apple*>(first))
-        ptr = new Orange(position);
-    else if (dynamic_cast<Orange*>(first))
-        ptr = new Melon(position);
-    else if (dynamic_cast<Melon*>(first))
-        ptr = new Watermelon(position);
-    else if (dynamic_cast<Watermelon*>(first))
-        ptr = new Final(position);
+    ptr = first->createNext(position);
 
     if (ptr != nullptr)
         entities.push_back(ptr);
+}
+
+void Game::initActualAndNext()
+{
+    actual = new Strawberry({ NEXT_POSITION_X,NEXT_POSITION_Y });
+    next = new Strawberry({ NEXT_POSITION_X,NEXT_POSITION_Y });
+}
+
+void Game::updateActualPosition(const sf::Vector2f& position)
+{
+    if (position.x >= X_BOUNDRY - actual->radius)
+        actual->position.x = X_BOUNDRY - actual->radius;
+    else if (position.x <= -X_BOUNDRY + actual->radius)
+        actual->position.x = -X_BOUNDRY + actual->radius;
+    else
+        actual->position.x = position.x;
+    actual->position.y = TOP_BOUNDRY - (actual->radius * 2.f);
+}
+
+void Game::pushToGame(std::mt19937& mt, std::uniform_int_distribution<int>& distEntity)
+{
+    entities.push_back(actual);
+    actual = next;
+
+    Entity* ptr = nullptr;
+
+    switch (distEntity(mt))
+    {
+    case 0:
+        ptr = new Strawberry({ NEXT_POSITION_X, NEXT_POSITION_Y });
+        break;
+    case 1:
+        ptr = new Apple({ NEXT_POSITION_X, NEXT_POSITION_Y });
+        break;
+    case 2:
+        ptr = new Orange({ NEXT_POSITION_X, NEXT_POSITION_Y });
+        break;
+    case 3:
+        ptr = new Melon({ NEXT_POSITION_X, NEXT_POSITION_Y });
+        break;
+    default:
+        break;
+    }
+
+    next = ptr;
+}
+
+bool Game::isEntityOverEndBound(Entity* entity)
+{
+    return entity->position.y - entity->radius < TOP_BOUNDRY;
+}
+
+void Game::updatingEndGame()
+{
+    if (entityOverEndBound)
+    {
+        endTime += deltaTime;
+        if (endTime > 1.0f)
+        {
+            this->topLine[0].color = sf::Color::Red;
+            this->topLine[1].color = sf::Color::Red;
+        }
+        if (endTime > TIME_TO_END)
+            gameOver = true;
+    }
+    else
+    {
+        endTime = 0.f;
+        this->topLine[0].color = sf::Color::White;
+        this->topLine[1].color = sf::Color::White;
+    }
+}
+
+void Game::updateClickDelay()
+{
+    if (!canClick)
+    {
+        clickDelayTime += deltaTime;
+    }
+    if (clickDelayTime > CLICK_DELAY_END)
+    {
+        canClick = true;
+        clickDelayTime = 0.f;
+    }
 }
 
 void Game::clearEntities()
@@ -285,4 +326,7 @@ void Game::clearEntities()
     for (auto x : entities)
         delete x;
     entities.erase(entities.begin(), entities.end());
+
+    delete actual;
+    delete next;
 }

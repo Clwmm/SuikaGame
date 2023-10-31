@@ -151,16 +151,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Apple.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="Entity.cpp" />
-    <ClCompile Include="Final.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Melon.cpp" />
-    <ClCompile Include="Orange.cpp" />
-    <ClCompile Include="Strawberry.cpp" />
-    <ClCompile Include="Watermelon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Apple.h" />

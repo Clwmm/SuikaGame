@@ -4,14 +4,20 @@ Ball::Ball()
 {
 }
 
-Ball::Ball(const float& radius, const sf::Vector2f& position)
+Ball::Ball(const float& radius, const sf::Vector2f& position, std::string texture_link)
 {
 	this->radius = radius;
-	this->mass = radius * 1.5f;
+	this->mass = radius * MASS_MULTIPLIER;
 	this->position = position;
 
-	this->shape.setRadius(radius);
-	this->shape.setOrigin(radius, radius);
+	if (!texture.loadFromFile(texture_link))
+	{
+		std::cerr << "Cannot load: " << texture_link << std::endl;
+		exit(EXIT_FAILURE);
+	}
+
+	this->sprite.setTexture(texture);
+	this->sprite.setOrigin(texture.getSize().x / 2, texture.getSize().y / 2);
 }
 
 void Ball::update(float deltaTime)

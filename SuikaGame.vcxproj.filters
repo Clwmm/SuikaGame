@@ -39,24 +39,6 @@
     <ClCompile Include="Ball.cpp">
       <Filter>Source Files\Balls</Filter>
     </ClCompile>
-    <ClCompile Include="Strawberry.cpp">
-      <Filter>Source Files\Balls</Filter>
-    </ClCompile>
-    <ClCompile Include="Apple.cpp">
-      <Filter>Source Files\Balls</Filter>
-    </ClCompile>
-    <ClCompile Include="Melon.cpp">
-      <Filter>Source Files\Balls</Filter>
-    </ClCompile>
-    <ClCompile Include="Orange.cpp">
-      <Filter>Source Files\Balls</Filter>
-    </ClCompile>
-    <ClCompile Include="Watermelon.cpp">
-      <Filter>Source Files\Balls</Filter>
-    </ClCompile>
-    <ClCompile Include="Final.cpp">
-      <Filter>Source Files\Balls</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
