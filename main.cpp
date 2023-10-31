@@ -3,6 +3,6 @@
 
 int main()
 {
-	//FreeConsole();
+	FreeConsole();
 	Game game;
 }

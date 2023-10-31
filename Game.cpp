@@ -13,6 +13,36 @@ Game::Game()
 	view = sf::View(sf::Vector2f(0, 0), sf::Vector2f(viewSize.x, viewSize.y));
 	window->setView(view);
 
+    if (!font.loadFromFile("res/notalot35.ttf"))
+    {
+        std::cerr << "Cannot load: " << "res/notalot35.ttf" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    endShape.setSize(sf::Vector2f(X_BOUNDRY * 2.f, X_BOUNDRY * 2.f));
+    endShape.setOrigin(X_BOUNDRY, X_BOUNDRY);
+    endShape.setPosition(0.f, 0.f);
+    endShape.setFillColor(sf::Color(18, 33, 43, 100));
+
+    endText.setFont(font);
+    endText.setPosition(-48.f, -24.f);
+    endText.setCharacterSize(22);
+
+    pointText.setFont(font);
+    pointText.setString("Points:");
+    pointText.setPosition(-(VIEW_SIZE / 2.f) + 12, -(VIEW_SIZE / 2.f));
+    pointText.setCharacterSize(22);
+
+    noPointsText.setFont(font);
+    noPointsText.setString("0");
+    noPointsText.setPosition(-(VIEW_SIZE / 2.f) + 12, -(VIEW_SIZE / 2.f) + 12);
+    noPointsText.setCharacterSize(22);
+
+    nextText.setFont(font);
+    nextText.setString("Next:");
+    nextText.setPosition((VIEW_SIZE / 2.f) - 64, -(VIEW_SIZE / 2.f));
+    nextText.setCharacterSize(22);
+
     sf::Texture glassTexture;
     if (!glassTexture.loadFromFile("res/Glass.png"))
     {
@@ -40,7 +70,7 @@ void Game::game()
 {
     std::random_device rd;
     std::mt19937 mt(rd());
-    std::uniform_int_distribution<int> distEntity(0, 3);
+    std::uniform_int_distribution<int> distEntity(0, 4);
 
     sf::Vector2i pixelPos = sf::Mouse::getPosition(*window);
     sf::Vector2f wordPos = window->mapPixelToCoords(pixelPos);
@@ -63,10 +93,29 @@ void Game::game()
                 {
                 case sf::Keyboard::Escape:
                     return;
-
+                case sf::Keyboard::Enter:
+                    if (gameOver)
+                        restartGame();
+                    break;
+                case sf::Keyboard::Space:
+                    if (gameOver)
+                        break;
+                    if (canClick)
+                    {
+                        this->pushToGame(mt, distEntity);
+                        canClick = false;
+                    }
+                    break;
                 default:
                     break;
                 }
+                break;
+
+            case sf::Event::MouseMoved:
+                pixelPos = sf::Mouse::getPosition(*window);
+                wordPos = window->mapPixelToCoords(pixelPos);
+                this->updateActualPosition(wordPos);
+                break;
 
             case sf::Event::MouseButtonPressed:
                 switch (event.mouseButton.button)
@@ -87,18 +136,22 @@ void Game::game()
                 break;
             }
         }
-        
-        pixelPos = sf::Mouse::getPosition(*window);
-        wordPos = window->mapPixelToCoords(pixelPos);
-        this->updateActualPosition(wordPos);
 
         if (!gameOver)
         {
+            this->keyboardMoving();
+
             this->updateClickDelay();
+            this->updateText();
+
             this->updatingEntities();
             this->updatingEndGame();
             this->collisions();
             this->physics();
+        }
+        else
+        {
+            updateEndText();
         }
         this->render();
     }
@@ -138,7 +191,7 @@ void Game::collisions()
         {
             if (DoCirclesOverlap(entities[i]->position.x, entities[i]->position.y, entities[i]->radius, entities[j]->position.x, entities[j]->position.y, entities[j]->radius))
             {
-                if (typeid(*entities[i]) == typeid(*entities[j]) && !dynamic_cast<Final*>(entities[i]))
+                if (typeid(*entities[i]) == typeid(*entities[j]) && !dynamic_cast<Ball_X*>(entities[i]))
                 {
                     createNext(entities[i], entities[j]);
                     ++i;
@@ -209,12 +262,30 @@ void Game::physics()
 void Game::render()
 {
     window->clear(sf::Color(18, 33, 43)); // Color background
-    for (auto x : entities)
-        x->draw(*window);
+    
+    // ENTITIES
     actual->draw(*window);
     next->draw(*window);
+    for (auto x : entities)
+        x->draw(*window);
+
+    // TOP LINE
     window->draw(topLine, 2, sf::Lines);
+    
+    // GLASS
     window->draw(this->glass);
+    
+    // TEXT
+    window->draw(pointText);
+    window->draw(nextText);
+    window->draw(noPointsText);
+
+    if (gameOver)
+    {
+        window->draw(endShape);
+        window->draw(endText);
+    }
+
     window->display();
 }
 
@@ -234,13 +305,17 @@ void Game::createNext(Entity*& first, Entity*& second)
     ptr = first->createNext(position);
 
     if (ptr != nullptr)
+    {
+        noPoints += ptr->radius;
         entities.push_back(ptr);
+    }
+        
 }
 
 void Game::initActualAndNext()
 {
-    actual = new Strawberry({ NEXT_POSITION_X,NEXT_POSITION_Y });
-    next = new Strawberry({ NEXT_POSITION_X,NEXT_POSITION_Y });
+    actual = new Ball_I({ 0,NEXT_POSITION_Y });
+    next = new Ball_I({ NEXT_POSITION_X,NEXT_POSITION_Y });
 }
 
 void Game::updateActualPosition(const sf::Vector2f& position)
@@ -251,34 +326,40 @@ void Game::updateActualPosition(const sf::Vector2f& position)
         actual->position.x = -X_BOUNDRY + actual->radius;
     else
         actual->position.x = position.x;
-    actual->position.y = TOP_BOUNDRY - (actual->radius * 2.f);
+    actual->position.y = TOP_BOUNDRY - FINAL_SIZE;
 }
 
 void Game::pushToGame(std::mt19937& mt, std::uniform_int_distribution<int>& distEntity)
 {
     entities.push_back(actual);
+    noPoints += actual->radius;
+    next->position = actual->position;
     actual = next;
+    updateActualPosition(actual->position);
 
     Entity* ptr = nullptr;
 
     switch (distEntity(mt))
     {
     case 0:
-        ptr = new Strawberry({ NEXT_POSITION_X, NEXT_POSITION_Y });
+        ptr = new Ball_I({ NEXT_POSITION_X, NEXT_POSITION_Y });
         break;
     case 1:
-        ptr = new Apple({ NEXT_POSITION_X, NEXT_POSITION_Y });
+        ptr = new Ball_II({ NEXT_POSITION_X, NEXT_POSITION_Y });
         break;
     case 2:
-        ptr = new Orange({ NEXT_POSITION_X, NEXT_POSITION_Y });
+        ptr = new Ball_III({ NEXT_POSITION_X, NEXT_POSITION_Y });
         break;
     case 3:
-        ptr = new Melon({ NEXT_POSITION_X, NEXT_POSITION_Y });
+        ptr = new Ball_IV({ NEXT_POSITION_X, NEXT_POSITION_Y });
+        break;
+    case 4:
+        ptr = new Ball_V({ NEXT_POSITION_X, NEXT_POSITION_Y });
         break;
     default:
         break;
     }
-
+    
     next = ptr;
 }
 
@@ -319,6 +400,37 @@ void Game::updateClickDelay()
         canClick = true;
         clickDelayTime = 0.f;
     }
+}
+
+void Game::updateText()
+{
+    noPointsText.setString(std::to_string(noPoints));
+}
+
+void Game::updateEndText()
+{
+    if (highScore < noPoints)
+        highScore = noPoints;
+    endText.setString("Points: " + std::to_string(noPoints)
+                        + "\nHighscore: " + std::to_string(highScore)
+                        + "\n\n     [ ENTER ]");
+}
+
+void Game::restartGame()
+{
+    clearEntities();
+    initActualAndNext();
+
+    gameOver = false;
+    noPoints = 0;
+}
+
+void Game::keyboardMoving()
+{
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+        updateActualPosition({ actual->position.x - (150.f * deltaTime), 0});
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+        updateActualPosition({ actual->position.x + (150.f * deltaTime), 0 });
 }
 
 void Game::clearEntities()

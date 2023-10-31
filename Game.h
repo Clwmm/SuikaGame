@@ -3,12 +3,16 @@
 #include <vector>
 #include <random>
 
-#include "Strawberry.h"
-#include "Apple.h"
-#include "Orange.h"
-#include "Melon.h"
-#include "Watermelon.h"
-#include "Final.h"
+#include "Ball_I.h"
+#include "Ball_II.h"
+#include "Ball_III.h"
+#include "Ball_IV.h"
+#include "Ball_V.h"
+#include "Ball_VI.h"
+#include "Ball_VII.h"
+#include "Ball_VIII.h"
+#include "Ball_IX.h"
+#include "Ball_X.h"
 
 
 class Game
@@ -41,6 +45,16 @@ private:
 	bool canClick = true;
 
 	bool gameOver = false;
+	sf::RectangleShape endShape;
+	sf::Text endText;
+
+	sf::Font font;
+	sf::Text pointText;
+	sf::Text noPointsText;
+	sf::Text nextText;
+
+	size_t noPoints = 0;
+	size_t highScore = 0;
 
 public:
 	Game();
@@ -58,6 +72,10 @@ public:
 	bool isEntityOverEndBound(Entity* entity);
 	void updatingEndGame();
 	void updateClickDelay();
+	void updateText();
+	void updateEndText();
+	void restartGame();
+	void keyboardMoving();
 	void clearEntities();
 };
 
