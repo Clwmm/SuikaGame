@@ -70,7 +70,7 @@ void Game::game()
 {
     std::random_device rd;
     std::mt19937 mt(rd());
-    std::uniform_int_distribution<int> distEntity(0, 4);
+    std::uniform_int_distribution<int> distEntity(0, 1000);
 
     sf::Vector2i pixelPos = sf::Mouse::getPosition(*window);
     sf::Vector2f wordPos = window->mapPixelToCoords(pixelPos);
@@ -191,7 +191,7 @@ void Game::collisions()
         {
             if (DoCirclesOverlap(entities[i]->position.x, entities[i]->position.y, entities[i]->radius, entities[j]->position.x, entities[j]->position.y, entities[j]->radius))
             {
-                if (typeid(*entities[i]) == typeid(*entities[j]) && !dynamic_cast<Ball_X*>(entities[i]))
+                if (typeid(*entities[i]) == typeid(*entities[j]) && !dynamic_cast<Ball_XII*>(entities[i]))
                 {
                     createNext(entities[i], entities[j]);
                     ++i;
@@ -303,6 +303,9 @@ void Game::createNext(Entity*& first, Entity*& second)
     };
 
     ptr = first->createNext(position);
+    if (dynamic_cast<Ball_XII*>(ptr))
+        this->blackHole();
+    
 
     if (ptr != nullptr)
     {
@@ -316,6 +319,16 @@ void Game::initActualAndNext()
 {
     actual = new Ball_I({ 0,NEXT_POSITION_Y });
     next = new Ball_I({ NEXT_POSITION_X,NEXT_POSITION_Y });
+}
+
+void Game::blackHole()
+{
+    for (auto x : entities)
+    {
+        noPoints += x->radius;
+        x->life = false;
+    }
+        
 }
 
 void Game::updateActualPosition(const sf::Vector2f& position)
@@ -339,7 +352,26 @@ void Game::pushToGame(std::mt19937& mt, std::uniform_int_distribution<int>& dist
 
     Entity* ptr = nullptr;
 
-    switch (distEntity(mt))
+    int chance = distEntity(mt);
+
+    if (chance <= 250)
+        ptr = new Ball_I({ NEXT_POSITION_X, NEXT_POSITION_Y });
+    else if (chance <= 500)
+        ptr = new Ball_II({ NEXT_POSITION_X, NEXT_POSITION_Y });
+    else if (chance <= 750)
+        ptr = new Ball_III({ NEXT_POSITION_X, NEXT_POSITION_Y });
+    else if (chance <= 900)
+        ptr = new Ball_IV({ NEXT_POSITION_X, NEXT_POSITION_Y });
+    else if (chance <= 975)
+        ptr = new Ball_V({ NEXT_POSITION_X, NEXT_POSITION_Y });
+    else if (chance <= 995)
+        ptr = new Ball_VI({ NEXT_POSITION_X, NEXT_POSITION_Y });
+    else if (chance <= 999)
+        ptr = new Ball_VII({ NEXT_POSITION_X, NEXT_POSITION_Y });
+    else
+        ptr = new Ball_VIII({ NEXT_POSITION_X, NEXT_POSITION_Y });
+
+    /*switch (distEntity(mt))
     {
     case 0:
         ptr = new Ball_I({ NEXT_POSITION_X, NEXT_POSITION_Y });
@@ -358,7 +390,7 @@ void Game::pushToGame(std::mt19937& mt, std::uniform_int_distribution<int>& dist
         break;
     default:
         break;
-    }
+    }*/
     
     next = ptr;
 }
@@ -436,7 +468,11 @@ void Game::keyboardMoving()
 void Game::clearEntities()
 {
     for (auto x : entities)
+    {
+        noPoints += x->radius;
         delete x;
+    }
+        
     entities.erase(entities.begin(), entities.end());
 
     delete actual;

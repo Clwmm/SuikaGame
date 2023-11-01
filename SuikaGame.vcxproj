@@ -169,6 +169,8 @@
     <ClInclude Include="Ball_VII.h" />
     <ClInclude Include="Ball_VIII.h" />
     <ClInclude Include="Ball_X.h" />
+    <ClInclude Include="Ball_XI.h" />
+    <ClInclude Include="Ball_XII.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Settings.h" />

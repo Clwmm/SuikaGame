@@ -66,6 +66,7 @@ public:
 	void physics();
 	void render();
 	void createNext(Entity*& first, Entity*& second);
+	void blackHole();
 	void initActualAndNext();
 	void updateActualPosition(const sf::Vector2f& position);
 	void pushToGame(std::mt19937& mt, std::uniform_int_distribution<int>& distEntity);

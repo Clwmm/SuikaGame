@@ -5,16 +5,20 @@ constexpr int SCREEN_SIZE = 1200;
 constexpr int VIEW_SIZE = 400;
 
 // BALLS SIZE SETTINGS
-constexpr float BALL_I = 12.f; // PEA
-constexpr float BALL_II = 16.f; // BILARD
-constexpr float BALL_III = 18.f; // EYEBALL
-constexpr float BALL_IV = 22.f; // PONG ??
-constexpr float BALL_V = 26.f; // TENIS
-constexpr float BALL_VI = 30.f; // BAWLING BALL
-constexpr float BALL_VII = 32.f; // BASKETBALL
-constexpr float BALL_VIII = 36.f; // BEACHBALL
-constexpr float BALL_IX = 40.f; // MOON
-constexpr float BALL_X = 42.f; // PLANET
+constexpr float BALL_I = 12.f;		// PEA				25%		0		-	250
+constexpr float BALL_II = 16.f;		// BILARD			25%		251		-	500
+constexpr float BALL_III = 18.f;	// EYEBALL			25%		501		-	750
+constexpr float BALL_IV = 22.f;		// PONG ??			15%		751		-	900
+constexpr float BALL_V = 26.f;		// TENIS			7.5%	901		-	975
+constexpr float BALL_VI = 30.f;		// BAWLING BALL		2%		976		-	995
+constexpr float BALL_VII = 32.f;	// BASKETBALL		0.4%	996		-	999
+constexpr float BALL_VIII = 36.f;	// BEACHBALL		0.1%	1000	-	1000
+constexpr float BALL_IX = 40.f;		// MOON
+constexpr float BALL_X = 42.f;		// PLANET
+constexpr float BALL_XI = 44.f;		// GALAXY
+constexpr float BALL_XII = 48.f;	// BLACK HOLE
+
+// WHEN BLACK HOLE APEARS IT DESTROY EVERYTHING LEAVING ONLY ITSELF
 
 constexpr float FINAL_SIZE = 42.f;
 
