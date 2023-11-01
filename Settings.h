@@ -38,7 +38,7 @@ constexpr float A_SLOWDOWN_MULITPLIER = 0.6f;
 constexpr float V_SLOWDOWN_MULITPLIER = 0.04f;
 
 // GRAVITI MULTIPLIER
-constexpr float GRAVITI_MULITPLIER = 150.f;
+constexpr float GRAVITI_MULITPLIER = 155.f;
 
 
 // NEXT POSITION

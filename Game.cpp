@@ -6,7 +6,7 @@ Game::Game()
     viewSize = { VIEW_SIZE, VIEW_SIZE };
 
 	window = new sf::RenderWindow(sf::VideoMode(screenSize.x, screenSize.y), "SuikaGame", sf::Style::Titlebar | sf::Style::Close);
-    window->setFramerateLimit(244);
+    window->setFramerateLimit(240);
     
     backgroundColor = sf::Color(18, 33, 43);
 
