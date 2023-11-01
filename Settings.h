@@ -19,6 +19,10 @@ constexpr float BALL_XI = 44.f;		// GALAXY
 constexpr float BALL_XII = 48.f;	// BLACK HOLE
 
 // WHEN BLACK HOLE APEARS IT DESTROY EVERYTHING LEAVING ONLY ITSELF
+// TO DO:
+//		- ss after end
+//		- saving highscore to file
+//		- serializing files *.png
 
 constexpr float FINAL_SIZE = 42.f;
 
