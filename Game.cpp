@@ -1,8 +1,8 @@
 #include "Game.h"
 
-Game::Game()
+Game::Game(const int& screen_size)
 {
-    screenSize = sf::Vector2f(SCREEN_SIZE, SCREEN_SIZE);
+    screenSize = sf::Vector2f(screen_size, screen_size);
     viewSize = { VIEW_SIZE, VIEW_SIZE };
 
 	window = new sf::RenderWindow(sf::VideoMode(screenSize.x, screenSize.y), "SuikaGame", sf::Style::Titlebar | sf::Style::Close);

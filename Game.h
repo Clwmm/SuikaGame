@@ -57,7 +57,7 @@ private:
 	size_t highScore = 0;
 
 public:
-	Game();
+	Game(const int& screen_size);
 	~Game();
 
 	void game();

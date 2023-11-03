@@ -1,7 +1,6 @@
 #pragma once
 
-// WINDOW SIZE SETTINGS
-constexpr int SCREEN_SIZE = 1200;
+// VIEW SIZE SETTINGS
 constexpr int VIEW_SIZE = 400;
 
 // BALLS SIZE SETTINGS
@@ -24,7 +23,7 @@ constexpr float BALL_XII = 48.f;	// BLACK HOLE
 //		- saving highscore to file
 //		- serializing files *.png
 
-constexpr float FINAL_SIZE = 42.f;
+constexpr float FINAL_SIZE = 48.f;
 
 // WALLS SIZE SETTING
 constexpr float X_BOUNDRY = 100.f;
