@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 // VIEW SIZE SETTINGS
 constexpr int VIEW_SIZE = 400;
@@ -20,10 +21,15 @@ constexpr float BALL_XII = 48.f;	// BLACK HOLE
 // WHEN BLACK HOLE APEARS IT DESTROY EVERYTHING LEAVING ONLY ITSELF
 // TO DO:
 //		- ss after end
-//		- saving highscore to file
 //		- serializing files *.png
 
 constexpr float FINAL_SIZE = 48.f;
+
+// ENCRYPTING HIGHSCORE
+constexpr std::string HIGHSCORE_FILE = "res/data.a";
+constexpr char XORKEY = 'a';
+constexpr std::string FIRST_EN = "fdsi";
+constexpr std::string SECOND_EN = "iop";
 
 // WALLS SIZE SETTING
 constexpr float X_BOUNDRY = 100.f;

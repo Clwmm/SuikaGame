@@ -2,6 +2,8 @@
 
 #include <vector>
 #include <random>
+#include <fstream>
+#include <sstream>
 
 #include "Ball_I.h"
 #include "Ball_II.h"
@@ -75,6 +77,10 @@ public:
 	void updateClickDelay();
 	void updateText();
 	void updateEndText();
+	int getHighScore();
+	void updateHighScore(const int& highscore);
+	std::string encrypt(const std::string& data);
+	std::string decrypt(const std::string& data);
 	void restartGame();
 	void keyboardMoving();
 	void clearEntities();

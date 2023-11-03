@@ -56,6 +56,8 @@ Game::Game(const int& screen_size)
     this->topLine[0] = sf::Vertex(sf::Vector2f(- X_BOUNDRY, TOP_BOUNDRY));
     this->topLine[1] = sf::Vertex(sf::Vector2f(X_BOUNDRY, TOP_BOUNDRY));
 
+    this->highScore = this->getHighScore();
+
 	this->game();
 }
 
@@ -442,7 +444,11 @@ void Game::updateText()
 void Game::updateEndText()
 {
     if (highScore < noPoints)
+    {
         highScore = noPoints;
+        this->updateHighScore(highScore);
+    }
+        
     endText.setString("Points: " + std::to_string(noPoints)
                         + "\nHighscore: " + std::to_string(highScore)
                         + "\n\n     [ ENTER ]");
@@ -450,8 +456,8 @@ void Game::updateEndText()
 
 void Game::restartGame()
 {
-    clearEntities();
-    initActualAndNext();
+    this->clearEntities();
+    this->initActualAndNext();
 
     gameOver = false;
     noPoints = 0;
@@ -460,9 +466,55 @@ void Game::restartGame()
 void Game::keyboardMoving()
 {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-        updateActualPosition({ actual->position.x - (150.f * deltaTime), 0});
+        this->updateActualPosition({ actual->position.x - (150.f * deltaTime), 0});
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-        updateActualPosition({ actual->position.x + (150.f * deltaTime), 0 });
+        this->updateActualPosition({ actual->position.x + (150.f * deltaTime), 0 });
+}
+
+void Game::updateHighScore(const int& highscore)
+{
+    std::string encryptedHighScore = encrypt(FIRST_EN + " " + std::to_string(highscore) + " " + SECOND_EN);
+
+    std::ofstream file(HIGHSCORE_FILE, std::ios::out);
+    file << encryptedHighScore;
+    file.close();
+}
+
+int Game::getHighScore()
+{
+    std::ifstream readFile(HIGHSCORE_FILE, std::ios::in);
+    std::string encryptedData;
+    readFile >> encryptedData;
+    readFile.close();
+
+    std::string decryptedHighScore = this->decrypt(encryptedData);
+
+    std::istringstream iss(decryptedHighScore);
+    std::string word;
+    std::vector<std::string> vec;
+    while (iss >> word)
+        vec.push_back(word);
+
+    if (vec.size() < 3)
+        return 0;
+
+    if (vec[0] == FIRST_EN && vec[2] == SECOND_EN)
+        return std::stoi(vec[1]);
+    return 0;
+}
+
+std::string Game::encrypt(const std::string& data)
+{
+    std::string encryptedText = data;
+    for (char& c : encryptedText) {
+        c = c ^ XORKEY;
+    }
+    return encryptedText;
+}
+
+std::string Game::decrypt(const std::string& data)
+{
+    return encrypt(data);
 }
 
 void Game::clearEntities()

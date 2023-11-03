@@ -3,7 +3,7 @@
 
 int main()
 {
-	//FreeConsole();
+	FreeConsole();
 
 	int height = sf::VideoMode::getDesktopMode().height;
 	int width = sf::VideoMode::getDesktopMode().width;
