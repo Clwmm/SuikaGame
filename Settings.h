@@ -27,6 +27,7 @@ constexpr std::string TEXTURES_FILE_NAME = "res/res.a";
 //		- serializing files *.png - DONE
 //		- change mouse click from event to if check
 //		- create shared_ptr for textures to avoid white square glitch
+//		- stop adding deltatime when window is out of focus
 
 constexpr float FINAL_SIZE = 48.f;
 
