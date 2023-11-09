@@ -147,9 +147,6 @@ void Game::game()
             }
         }
 
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-            this->pushToGame(mt, distEntity);
-
         if (!gameOver)
         {
             this->keyboardMoving();
