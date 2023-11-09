@@ -1,11 +1,11 @@
 #include "Game.h"
 
-Game::Game(const int& screen_size)
+Game::Game(const unsigned int& screen_size)
 {
-    screenSize = sf::Vector2f(screen_size, screen_size);
+    screenSize = sf::Vector2f((float)screen_size, (float)screen_size);
     viewSize = { VIEW_SIZE, VIEW_SIZE };
 
-	window = new sf::RenderWindow(sf::VideoMode(screenSize.x, screenSize.y), "SuikaGame", sf::Style::Titlebar | sf::Style::Close);
+	window = new sf::RenderWindow(sf::VideoMode(screen_size, screen_size), "SuikaGame", sf::Style::Titlebar | sf::Style::Close);
     window->setFramerateLimit(75);
     
     backgroundColor = sf::Color(18, 33, 43);
@@ -360,7 +360,7 @@ void Game::createNext(Entity*& first, Entity*& second)
     mutex.lock();
     if (ptr != nullptr)
     {
-        noPoints += ptr->radius;
+        noPoints += static_cast<int>(ptr->radius);
         entities.push_back(ptr);
     }
     mutex.unlock();
@@ -378,7 +378,7 @@ void Game::blackHole()
     mutex.lock();
     for (auto x : entities)
     {
-        noPoints += x->radius;
+        noPoints += (int)x->radius;
         x->life = false;
     }
     mutex.unlock();
@@ -399,7 +399,7 @@ void Game::pushToGame(std::mt19937& mt, std::uniform_int_distribution<int>& dist
 {
     mutex.lock();
     entities.push_back(actual);
-    noPoints += actual->radius;
+    noPoints += (int)actual->radius;
     next->position = actual->position;
     actual = next;
     updateActualPosition(actual->position);
@@ -478,7 +478,7 @@ void Game::updateEndText()
     if (highScore < noPoints)
     {
         highScore = noPoints;
-        this->updateHighScore(highScore);
+        this->updateHighScore((int)highScore);
     }
         
     endText.setString("Points: " + std::to_string(noPoints)
@@ -554,7 +554,7 @@ void Game::clearEntities()
     mutex.lock();
     for (auto x : entities)
     {
-        noPoints += x->radius;
+        noPoints += (int)x->radius;
         delete x;
     }
         

@@ -50,46 +50,10 @@
     <ClInclude Include="Ball.h">
       <Filter>Header Files\Balls</Filter>
     </ClInclude>
-    <ClInclude Include="Apple.h">
-      <Filter>Header Files\Balls</Filter>
-    </ClInclude>
     <ClInclude Include="Settings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Ball_I.h">
-      <Filter>Header Files\Balls</Filter>
-    </ClInclude>
-    <ClInclude Include="Ball_II.h">
-      <Filter>Header Files\Balls</Filter>
-    </ClInclude>
-    <ClInclude Include="Ball_III.h">
-      <Filter>Header Files\Balls</Filter>
-    </ClInclude>
-    <ClInclude Include="Ball_IV.h">
-      <Filter>Header Files\Balls</Filter>
-    </ClInclude>
-    <ClInclude Include="Ball_V.h">
-      <Filter>Header Files\Balls</Filter>
-    </ClInclude>
-    <ClInclude Include="Ball_VI.h">
-      <Filter>Header Files\Balls</Filter>
-    </ClInclude>
-    <ClInclude Include="Ball_VII.h">
-      <Filter>Header Files\Balls</Filter>
-    </ClInclude>
-    <ClInclude Include="Ball_VIII.h">
-      <Filter>Header Files\Balls</Filter>
-    </ClInclude>
-    <ClInclude Include="Ball_X.h">
-      <Filter>Header Files\Balls</Filter>
-    </ClInclude>
-    <ClInclude Include="Ball_IX.h">
-      <Filter>Header Files\Balls</Filter>
-    </ClInclude>
-    <ClInclude Include="Ball_XI.h">
-      <Filter>Header Files\Balls</Filter>
-    </ClInclude>
-    <ClInclude Include="Ball_XII.h">
+    <ClInclude Include="Balls.h">
       <Filter>Header Files\Balls</Filter>
     </ClInclude>
   </ItemGroup>

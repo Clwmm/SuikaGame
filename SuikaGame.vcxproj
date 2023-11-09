@@ -157,20 +157,8 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Apple.h" />
     <ClInclude Include="Ball.h" />
-    <ClInclude Include="Ball_I.h" />
-    <ClInclude Include="Ball_II.h" />
-    <ClInclude Include="Ball_III.h" />
-    <ClInclude Include="Ball_IV.h" />
-    <ClInclude Include="Ball_IX.h" />
-    <ClInclude Include="Ball_V.h" />
-    <ClInclude Include="Ball_VI.h" />
-    <ClInclude Include="Ball_VII.h" />
-    <ClInclude Include="Ball_VIII.h" />
-    <ClInclude Include="Ball_X.h" />
-    <ClInclude Include="Ball_XI.h" />
-    <ClInclude Include="Ball_XII.h" />
+    <ClInclude Include="Balls.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Settings.h" />

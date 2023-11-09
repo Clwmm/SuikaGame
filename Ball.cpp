@@ -17,7 +17,7 @@ Ball::Ball(const float& radius, const sf::Vector2f& position, std::string textur
 	}
 
 	this->sprite.setTexture(texture);
-	this->sprite.setOrigin(texture.getSize().x / 2, texture.getSize().y / 2);
+	this->sprite.setOrigin(texture.getSize().x / 2.f, texture.getSize().y / 2.f);
 }
 
 void Ball::update(float deltaTime)
@@ -36,21 +36,21 @@ void Ball::update(float deltaTime)
 	if (this->position.y >= Y_BOUNDRY - this->radius)
 	{
 		this->position.y = Y_BOUNDRY - this->radius;
-		this->velocity.y = -this->velocity.y * 0.2;
+		this->velocity.y = -this->velocity.y * 0.2f;
 		this->acceleration.y = 0;
 	}
 
 	if (this->position.x >= X_BOUNDRY - this->radius)
 	{
 		this->position.x = X_BOUNDRY - this->radius;
-		this->velocity.x = -this->velocity.x * 0.2;
+		this->velocity.x = -this->velocity.x * 0.2f;
 		this->acceleration.x = 0;
 	}
 
 	if (this->position.x <= -X_BOUNDRY + this->radius)
 	{
 		this->position.x = -X_BOUNDRY + this->radius;
-		this->velocity.x = -this->velocity.x * 0.2;
+		this->velocity.x = -this->velocity.x * 0.2f;
 		this->acceleration.x = 0;
 	}
 

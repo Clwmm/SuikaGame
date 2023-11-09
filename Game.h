@@ -5,16 +5,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "Ball_I.h"
-#include "Ball_II.h"
-#include "Ball_III.h"
-#include "Ball_IV.h"
-#include "Ball_V.h"
-#include "Ball_VI.h"
-#include "Ball_VII.h"
-#include "Ball_VIII.h"
-#include "Ball_IX.h"
-#include "Ball_X.h"
+#include "Balls.h"
 
 
 class Game
@@ -62,7 +53,7 @@ private:
 	sf::Mutex mutex;
 
 public:
-	Game(const int& screen_size);
+	Game(const unsigned int& screen_size);
 	~Game();
 
 	void game();
