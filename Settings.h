@@ -37,19 +37,6 @@ constexpr float Y_BOUNDRY = 180.f;
 
 constexpr float TOP_BOUNDRY = -115.f;
 
-// MASS MULTIPLIER
-constexpr float MASS_MULTIPLIER = 12.f;
-
-// ACCELERATION SLOWDOWN MULTIPLIER
-constexpr float A_SLOWDOWN_MULITPLIER = 0.6f;
-
-// VELOCITY SLOWDOWN MULTIPLIER
-constexpr float V_SLOWDOWN_MULITPLIER = 0.04f;
-
-// GRAVITI MULTIPLIER
-constexpr float GRAVITI_MULITPLIER = 155.f;
-
-
 // NEXT POSITION
 constexpr float NEXT_POSITION_X = (VIEW_SIZE / 2.f) - FINAL_SIZE;
 constexpr float NEXT_POSITION_Y = -(VIEW_SIZE / 2.f) + (2.f * FINAL_SIZE);
@@ -58,3 +45,17 @@ constexpr float NEXT_POSITION_Y = -(VIEW_SIZE / 2.f) + (2.f * FINAL_SIZE);
 constexpr float TIME_TO_END = 2.5f;
 
 constexpr float CLICK_DELAY_END = 0.3f;
+
+// PHISICS
+
+// MASS MULTIPLIER
+constexpr float MASS_MULTIPLIER = 1.5f;
+
+// ACCELERATION SLOWDOWN MULTIPLIER
+constexpr float A_SLOWDOWN_MULITPLIER = 1.5f;
+
+// VELOCITY SLOWDOWN MULTIPLIER
+constexpr float V_SLOWDOWN_MULITPLIER = 1.f;
+
+// GRAVITI MULTIPLIER
+constexpr float GRAVITI_MULITPLIER = 100.f;

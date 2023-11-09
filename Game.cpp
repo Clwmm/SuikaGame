@@ -6,7 +6,7 @@ Game::Game(const int& screen_size)
     viewSize = { VIEW_SIZE, VIEW_SIZE };
 
 	window = new sf::RenderWindow(sf::VideoMode(screenSize.x, screenSize.y), "SuikaGame", sf::Style::Titlebar | sf::Style::Close);
-    window->setFramerateLimit(240);
+    window->setFramerateLimit(75);
     
     backgroundColor = sf::Color(18, 33, 43);
 
@@ -64,7 +64,6 @@ Game::Game(const int& screen_size)
 Game::~Game()
 {
     this->clearEntities();
-    this->window->close();
 	delete window;
 }
 
@@ -79,6 +78,11 @@ void Game::game()
 
     this->initActualAndNext();
 
+    sf::Thread th(&Game::renderTh, this);
+    renderThread = true;
+    window->setActive(false);
+    th.launch();
+
     while (window->isOpen())
     {
         deltaTime = clock.restart().asSeconds();
@@ -88,13 +92,15 @@ void Game::game()
             switch (event.type)
             {
             case sf::Event::Closed:
-                return;
+                this->window->close();
+                break;
 
             case sf::Event::KeyPressed:
                 switch (event.key.code)
                 {
                 case sf::Keyboard::Escape:
-                    return;
+                    this->window->close();
+                    break;
                 case sf::Keyboard::Enter:
                     if (gameOver)
                         restartGame();
@@ -155,13 +161,16 @@ void Game::game()
         {
             updateEndText();
         }
-        this->render();
     }
+
+    renderThread = false;
+    th.wait();
 }
 
 void Game::updatingEntities()
 {
     entityOverEndBound = false;
+    mutex.lock();
     for (auto i = entities.begin(); i != entities.end();)
     {
         Entity* e = *i;
@@ -178,6 +187,7 @@ void Game::updatingEntities()
         else
             ++i;
     }
+    mutex.unlock();
 }
 
 void Game::collisions()
@@ -264,7 +274,7 @@ void Game::physics()
 void Game::render()
 {
     window->clear(sf::Color(18, 33, 43)); // Color background
-    
+
     // ENTITIES
     actual->draw(*window);
     next->draw(*window);
@@ -273,10 +283,10 @@ void Game::render()
 
     // TOP LINE
     window->draw(topLine, 2, sf::Lines);
-    
+
     // GLASS
     window->draw(this->glass);
-    
+
     // TEXT
     window->draw(pointText);
     window->draw(nextText);
@@ -289,6 +299,45 @@ void Game::render()
     }
 
     window->display();
+}
+
+void Game::renderTh()
+{
+    window->setActive(true);
+    while (renderThread)
+    {
+        window->clear(sf::Color(18, 33, 43)); // Color background
+
+        // ENTITIES
+        actual->draw(*window);
+        next->draw(*window);
+
+        mutex.lock();
+        for (auto x : entities)
+            if (x != nullptr)
+                x->draw(*window);
+        mutex.unlock();
+
+        // TOP LINE
+        window->draw(topLine, 2, sf::Lines);
+
+        // GLASS
+        window->draw(this->glass);
+
+        // TEXT
+        window->draw(pointText);
+        window->draw(nextText);
+        window->draw(noPointsText);
+
+        if (gameOver)
+        {
+            window->draw(endShape);
+            window->draw(endText);
+        }
+
+        window->display();
+    }
+    window->setActive(false);
 }
 
 void Game::createNext(Entity*& first, Entity*& second)
@@ -308,12 +357,13 @@ void Game::createNext(Entity*& first, Entity*& second)
     if (dynamic_cast<Ball_XII*>(ptr))
         this->blackHole();
     
-
+    mutex.lock();
     if (ptr != nullptr)
     {
         noPoints += ptr->radius;
         entities.push_back(ptr);
     }
+    mutex.unlock();
         
 }
 
@@ -325,12 +375,13 @@ void Game::initActualAndNext()
 
 void Game::blackHole()
 {
+    mutex.lock();
     for (auto x : entities)
     {
         noPoints += x->radius;
         x->life = false;
     }
-        
+    mutex.unlock();
 }
 
 void Game::updateActualPosition(const sf::Vector2f& position)
@@ -346,6 +397,7 @@ void Game::updateActualPosition(const sf::Vector2f& position)
 
 void Game::pushToGame(std::mt19937& mt, std::uniform_int_distribution<int>& distEntity)
 {
+    mutex.lock();
     entities.push_back(actual);
     noPoints += actual->radius;
     next->position = actual->position;
@@ -372,29 +424,9 @@ void Game::pushToGame(std::mt19937& mt, std::uniform_int_distribution<int>& dist
         ptr = new Ball_VII({ NEXT_POSITION_X, NEXT_POSITION_Y });
     else
         ptr = new Ball_VIII({ NEXT_POSITION_X, NEXT_POSITION_Y });
-
-    /*switch (distEntity(mt))
-    {
-    case 0:
-        ptr = new Ball_I({ NEXT_POSITION_X, NEXT_POSITION_Y });
-        break;
-    case 1:
-        ptr = new Ball_II({ NEXT_POSITION_X, NEXT_POSITION_Y });
-        break;
-    case 2:
-        ptr = new Ball_III({ NEXT_POSITION_X, NEXT_POSITION_Y });
-        break;
-    case 3:
-        ptr = new Ball_IV({ NEXT_POSITION_X, NEXT_POSITION_Y });
-        break;
-    case 4:
-        ptr = new Ball_V({ NEXT_POSITION_X, NEXT_POSITION_Y });
-        break;
-    default:
-        break;
-    }*/
     
     next = ptr;
+    mutex.unlock();
 }
 
 bool Game::isEntityOverEndBound(Entity* entity)
@@ -519,6 +551,7 @@ std::string Game::decrypt(const std::string& data)
 
 void Game::clearEntities()
 {
+    mutex.lock();
     for (auto x : entities)
     {
         noPoints += x->radius;
@@ -529,4 +562,5 @@ void Game::clearEntities()
 
     delete actual;
     delete next;
+    mutex.unlock();
 }

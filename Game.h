@@ -58,6 +58,9 @@ private:
 	size_t noPoints = 0;
 	size_t highScore = 0;
 
+	bool renderThread = true;
+	sf::Mutex mutex;
+
 public:
 	Game(const int& screen_size);
 	~Game();
@@ -67,6 +70,7 @@ public:
 	void collisions();
 	void physics();
 	void render();
+	void renderTh();
 	void createNext(Entity*& first, Entity*& second);
 	void blackHole();
 	void initActualAndNext();
