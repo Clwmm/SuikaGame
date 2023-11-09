@@ -45,12 +45,7 @@ Game::Game(const unsigned int& screen_size)
     nextText.setPosition((VIEW_SIZE / 2.f) - 64, -(VIEW_SIZE / 2.f));
     nextText.setCharacterSize(22);
 
-    sf::Texture glassTexture;
-    if (!glassTexture.loadFromFile("res/Glass.png"))
-    {
-        std::cerr << "Cannot load: " << "res/Glass.png" << std::endl;
-        exit(EXIT_FAILURE);
-    }
+    sf::Texture glassTexture = TextureManager::AcquireTexture("res/Glass.png");
     this->glass.setTexture(glassTexture);
 
     this->glass.setPosition(-X_BOUNDRY, -Y_BOUNDRY);
