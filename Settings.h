@@ -24,7 +24,9 @@ constexpr std::string TEXTURES_FILE_NAME = "res/res.a";
 // WHEN BLACK HOLE APEARS IT DESTROY EVERYTHING LEAVING ONLY ITSELF
 // TO DO:
 //		- ss after end
-//		- serializing files *.png
+//		- serializing files *.png - DONE
+//		- change mouse click from event to if check
+//		- create shared_ptr for textures to avoid white square glitch
 
 constexpr float FINAL_SIZE = 48.f;
 
