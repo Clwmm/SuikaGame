@@ -18,6 +18,9 @@ constexpr float BALL_X = 42.f;		// PLANET
 constexpr float BALL_XI = 44.f;		// GALAXY
 constexpr float BALL_XII = 48.f;	// BLACK HOLE
 
+// TEXTURES FILE NAME
+constexpr std::string TEXTURES_FILE_NAME = "res/res.a";
+
 // WHEN BLACK HOLE APEARS IT DESTROY EVERYTHING LEAVING ONLY ITSELF
 // TO DO:
 //		- ss after end

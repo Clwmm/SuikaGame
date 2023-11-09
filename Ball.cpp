@@ -4,17 +4,13 @@ Ball::Ball()
 {
 }
 
-Ball::Ball(const float& radius, const sf::Vector2f& position, std::string texture_link)
+Ball::Ball(const float& radius, const sf::Vector2f& position, std::string textureName)
 {
 	this->radius = radius;
 	this->mass = radius * MASS_MULTIPLIER;
 	this->position = position;
 
-	if (!texture.loadFromFile(texture_link))
-	{
-		std::cerr << "Cannot load: " << texture_link << std::endl;
-		exit(EXIT_FAILURE);
-	}
+	texture = TextureManager::AcquireTexture(textureName);
 
 	this->sprite.setTexture(texture);
 	this->sprite.setOrigin(texture.getSize().x / 2.f, texture.getSize().y / 2.f);

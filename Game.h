@@ -56,7 +56,7 @@ public:
 	Game(const unsigned int& screen_size);
 	~Game();
 
-	static void SaveTexturesToFile(const std::map<std::string, sf::Texture>& textures, const std::string& filename);
+	static void SaveTexturesToFile();
 	
 private:
 	void game();

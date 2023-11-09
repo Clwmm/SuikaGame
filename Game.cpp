@@ -5,6 +5,8 @@ Game::Game(const unsigned int& screen_size)
     screenSize = sf::Vector2f((float)screen_size, (float)screen_size);
     viewSize = { VIEW_SIZE, VIEW_SIZE };
 
+    TextureManager::LoadTextures(TEXTURES_FILE_NAME);
+
 	window = new sf::RenderWindow(sf::VideoMode(screen_size, screen_size), "SuikaGame", sf::Style::Titlebar | sf::Style::Close);
     window->setFramerateLimit(75);
     
@@ -144,6 +146,9 @@ void Game::game()
                 break;
             }
         }
+
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+            this->pushToGame(mt, distEntity);
 
         if (!gameOver)
         {
@@ -571,7 +576,36 @@ void Game::clearEntities()
     mutex.unlock();
 }
 
-void Game::SaveTexturesToFile(const std::map<std::string, sf::Texture>& textures, const std::string& filename)
+void Game::SaveTexturesToFile()
 {
-    TextureManager::SaveTextures(textures, filename);
+    std::vector<std::string> pngFileNames =
+    {
+        "res/Pea12.png",
+        "res/Bilard16.png",
+        "res/Eyeball18.png",
+        "res/Pong22.png",
+        "res/Tenis26.png",
+        "res/Bawling30.png",
+        "res/Basketball32.png",
+        "res/Beach36.png",
+        "res/Moon40.png",
+        "res/Planet42.png",
+        "res/Galaxy44.png",
+        "res/Blackhole48.png",
+        "res/Glass.png"
+    };
+
+    std::map<std::string, sf::Texture> map;
+    for (auto name : pngFileNames)
+    {
+        sf::Texture texture;
+        if (!texture.loadFromFile(name))
+        {
+            std::cerr << "Can not open file: " << name << std::endl;
+            exit(EXIT_FAILURE);
+        }
+        map[name] = texture;
+    }
+
+    TextureManager::SaveTextures(map, TEXTURES_FILE_NAME);
 }
