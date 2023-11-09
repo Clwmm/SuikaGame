@@ -309,8 +309,10 @@ void Game::renderTh()
         window->clear(sf::Color(18, 33, 43)); // Color background
 
         // ENTITIES
-        actual->draw(*window);
-        next->draw(*window);
+        if (actual)
+            actual->draw(*window);
+        if (next)
+            next->draw(*window);
 
         mutex.lock();
         for (auto x : entities)
@@ -552,15 +554,19 @@ std::string Game::decrypt(const std::string& data)
 void Game::clearEntities()
 {
     mutex.lock();
-    for (auto x : entities)
+    for (auto i = entities.begin(); i != entities.end();)
     {
-        noPoints += (int)x->radius;
-        delete x;
+        Entity* e = *i;
+        i = entities.erase(i);
+        delete e;
     }
-        
     entities.erase(entities.begin(), entities.end());
 
     delete actual;
+    actual = nullptr;
+
     delete next;
+    next = nullptr;
+
     mutex.unlock();
 }
