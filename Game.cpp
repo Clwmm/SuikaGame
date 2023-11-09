@@ -570,3 +570,8 @@ void Game::clearEntities()
 
     mutex.unlock();
 }
+
+void Game::SaveTexturesToFile(const std::map<std::string, sf::Texture>& textures, const std::string& filename)
+{
+    TextureManager::SaveTextures(textures, filename);
+}

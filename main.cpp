@@ -1,6 +1,8 @@
 #include "Game.h"
 #include <windows.h>
 
+std::map<std::string, sf::Texture> TextureManager::texturesMap;
+
 int main()
 {
 	FreeConsole();

@@ -1,6 +1,5 @@
 #pragma once
-#include "SFML/Graphics.hpp"
-#include "Settings.h"
+#include "TextureManager.h"
 #include <iostream>
 
 class Entity

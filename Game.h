@@ -56,6 +56,9 @@ public:
 	Game(const unsigned int& screen_size);
 	~Game();
 
+	static void SaveTexturesToFile(const std::map<std::string, sf::Texture>& textures, const std::string& filename);
+	
+private:
 	void game();
 	void updatingEntities();
 	void collisions();
@@ -79,5 +82,7 @@ public:
 	void restartGame();
 	void keyboardMoving();
 	void clearEntities();
+
+
 };
 
