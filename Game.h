@@ -48,6 +48,8 @@ private:
 
 	size_t noPoints = 0;
 	size_t highScore = 0;
+	bool highScoreSaved = false;
+
 
 	bool renderThread = true;
 	sf::Mutex mutex;

@@ -137,10 +137,13 @@ void Game::game()
                 default:
                     break;
                 }
+                break;
+
             default:
                 break;
             }
         }
+        deltaTime = deltaTime > 0.1 ? 0.005 : deltaTime;
 
         if (!gameOver)
         {
@@ -368,7 +371,7 @@ void Game::createNext(Entity*& first, Entity*& second)
 
 void Game::initActualAndNext()
 {
-    actual = new Ball_I({ 0,NEXT_POSITION_Y });
+    actual = new Ball_I({ 0, ACTUAL_POSITION_Y });
     next = new Ball_I({ NEXT_POSITION_X,NEXT_POSITION_Y });
 }
 
@@ -391,7 +394,6 @@ void Game::updateActualPosition(const sf::Vector2f& position)
         actual->position.x = -X_BOUNDRY + actual->radius;
     else
         actual->position.x = position.x;
-    actual->position.y = TOP_BOUNDRY - FINAL_SIZE;
 }
 
 void Game::pushToGame(std::mt19937& mt, std::uniform_int_distribution<int>& distEntity)
@@ -474,8 +476,9 @@ void Game::updateText()
 
 void Game::updateEndText()
 {
-    if (highScore < noPoints)
+    if (highScore < noPoints && !highScoreSaved)
     {
+        highScoreSaved = true;
         highScore = noPoints;
         this->updateHighScore((int)highScore);
     }
@@ -491,6 +494,7 @@ void Game::restartGame()
     this->initActualAndNext();
 
     gameOver = false;
+    highScoreSaved = false;
     noPoints = 0;
 }
 
