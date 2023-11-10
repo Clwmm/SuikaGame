@@ -54,15 +54,15 @@ bool TextureManager::LoadTextures(const std::string& filename)
             }
         }
 
-        sf::Texture texture;
-        texture.loadFromImage(image);
-        texturesMap[id] = texture;
+        auto textureShPtr = std::make_shared<sf::Texture>();
+        textureShPtr->loadFromImage(image);
+        texturesMap[id] = textureShPtr;
     }
 
 	return true;
 }
 
-sf::Texture TextureManager::AcquireTexture(const std::string& name)
+std::shared_ptr<sf::Texture> TextureManager::AcquireTexture(const std::string& name)
 {
     return texturesMap[name];
 }

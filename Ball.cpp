@@ -9,11 +9,10 @@ Ball::Ball(const float& radius, const sf::Vector2f& position, std::string textur
 	this->radius = radius;
 	this->mass = radius * MASS_MULTIPLIER;
 	this->position = position;
+	this->rotation = 0;
 
-	texture = TextureManager::AcquireTexture(textureName);
-
-	this->sprite.setTexture(texture);
-	this->sprite.setOrigin(texture.getSize().x / 2.f, texture.getSize().y / 2.f);
+	this->sprite.setTexture(*TextureManager::AcquireTexture(textureName));
+	this->sprite.setOrigin(this->radius, this->radius);
 }
 
 void Ball::update(float deltaTime)
@@ -52,6 +51,6 @@ void Ball::update(float deltaTime)
 
 	if (fabs(this->velocity.x * this->velocity.x + this->velocity.y * this->velocity.y) < 0.1f)
 		this->velocity = { 0, 0 };
-	
-	this->sprite.rotate(this->velocity.x * 2.5f * deltaTime);
+
+	this->rotation += this->velocity.x * 2.5f * deltaTime;
 }

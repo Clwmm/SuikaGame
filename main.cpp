@@ -1,7 +1,7 @@
 #include "Game.h"
 #include <windows.h>
 
-std::map<std::string, sf::Texture> TextureManager::texturesMap;
+std::map<std::string, std::shared_ptr<sf::Texture>> TextureManager::texturesMap;
 
 int main()
 {

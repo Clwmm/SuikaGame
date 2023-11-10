@@ -5,8 +5,6 @@
 class Entity
 {
 public:
-	sf::CircleShape shape;
-	sf::Texture texture;
 	sf::Sprite sprite;
 	sf::Vector2f position;
 	sf::Vector2f velocity;
@@ -14,6 +12,7 @@ public:
 
 	float radius;
 	float mass;
+	float rotation;
 
 	bool life = true;
 

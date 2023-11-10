@@ -45,8 +45,7 @@ Game::Game(const unsigned int& screen_size)
     nextText.setPosition((VIEW_SIZE / 2.f) - 64, -(VIEW_SIZE / 2.f));
     nextText.setCharacterSize(22);
 
-    sf::Texture glassTexture = TextureManager::AcquireTexture("res/Glass.png");
-    this->glass.setTexture(glassTexture);
+    this->glass.setTexture(*TextureManager::AcquireTexture("res/Glass.png"));
 
     this->glass.setPosition(-X_BOUNDRY, -Y_BOUNDRY);
 
@@ -143,7 +142,7 @@ void Game::game()
                 break;
             }
         }
-        deltaTime = deltaTime > 0.1 ? 0.005 : deltaTime;
+        deltaTime = deltaTime > 0.1f ? 0.005f : deltaTime;
 
         if (!gameOver)
         {
