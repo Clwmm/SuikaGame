@@ -142,7 +142,7 @@ void Game::game()
                 break;
             }
         }
-        deltaTime = deltaTime > 0.1f ? 0.005f : deltaTime;
+        deltaTime = deltaTime > 0.1f ? 0.0005f : deltaTime;
 
         if (!gameOver)
         {
