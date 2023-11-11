@@ -25,7 +25,7 @@ constexpr std::string TEXTURES_FILE_NAME = "res/res.a";
 
 // ENCRYPTING HIGHSCORE
 constexpr		std::string HIGHSCORE_FILE	= "res/data.a";
-constexpr char	XORKEY						= 'a';
+constexpr		char		XORKEY			= 'a';
 constexpr		std::string FIRST_EN		= "fdsi";
 constexpr		std::string SECOND_EN		= "iop";
 
@@ -48,10 +48,10 @@ constexpr float CLICK_DELAY_END = 0.3f;
 
 // PHISICS
 
-constexpr float MASS_MULTIPLIER			= 1.5f;
+constexpr float MASS_MULTIPLIER			= 1.8f;
 constexpr float A_SLOWDOWN_MULITPLIER	= 1.5f;
 constexpr float V_SLOWDOWN_MULITPLIER	= 1.f;
-constexpr float GRAVITI_MULITPLIER		= 100.f;
+constexpr float GRAVITI_MULITPLIER		= 125.f;
 
 
 // WHEN BLACK HOLE APEARS IT DESTROY EVERYTHING LEAVING ONLY ITSELF
@@ -59,4 +59,4 @@ constexpr float GRAVITI_MULITPLIER		= 100.f;
 //		- ss after end
 //		- serializing files *.png										- DONE
 //		- fix deltatime problem											- DONE
-//		- create shared_ptr for textures to avoid white square glitch
+//		- create shared_ptr for textures to avoid white square glitch	- DONE
